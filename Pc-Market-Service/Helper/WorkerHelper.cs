@@ -8,14 +8,14 @@ namespace Pc_Market_Service.Helper
 {
     public class WorkerHelper
     {
-        private Timer _timer;
+        private static Timer _timer;
 
         public WorkerHelper()
         {
             ScheduleNextRun();
         }
 
-        private void ScheduleNextRun()
+        public static void ScheduleNextRun()
         {
             var now = DateTime.Now;
             var nextRun = now.Date.AddHours(8); // Następne uruchomienie dzisiaj o 8 rano
@@ -29,7 +29,7 @@ namespace Pc_Market_Service.Helper
             _timer = new Timer(DoWork, null, dueTime, Timeout.InfiniteTimeSpan); // Ustawiamy timer na jednorazowe uruchomienie
         }
 
-        private void DoWork(object state)
+        public static void DoWork(object state)
         {
             // Logika, która ma być wykonana o 8 rano
             Console.WriteLine("Wykonywanie pracy: " + DateTime.Now.ToString());
