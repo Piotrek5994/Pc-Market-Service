@@ -15,5 +15,19 @@ namespace Pc_Market_Service.Logger
         {
             _consoleLogger = consoleLogger;
         }
+        public void LogInformation(string message)
+        {
+            _consoleLogger.LogInformation(message);
+        }
+
+        public void LogWarning(string message)
+        {
+            _consoleLogger.LogWarning(message);
+        }
+
+        public void LogError(string message)
+        {
+            _consoleLogger.LogError(message);
+        }
     }
 }
