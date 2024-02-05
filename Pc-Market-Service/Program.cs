@@ -21,6 +21,7 @@ namespace Pc_Market_Service
                     // Configuration options setup
                     var databaseConfig = hostingContext.Configuration.GetSection("DatabaseConfig").Get<SqlConfiguration>();
 
+                    // Add configuration for worker
                     services.Configure<ActiveWorkerConfig>(hostingContext.Configuration.GetSection("ActiveWorkerConfig"));
                     
                     // Construct the connection string
