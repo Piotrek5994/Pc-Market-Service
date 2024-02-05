@@ -9,43 +9,43 @@ namespace Pc_Market_Service.Helper
 {
     public class WorkerHelper : IHostedService
     {
-        private Timer _timer; // Timer do planowania zadań
+        private Timer _timer;
 
-        // Metoda StartAsync jest wywoływana przy uruchomieniu usługi, inicjalizuje harmonogram zadania.
+        // The StartAsync method is called upon the service's startup, initializes the task's schedule.
         public Task StartAsync(CancellationToken cancellationToken)
         {
             ScheduleNextRun();
-            return Task.CompletedTask; // Zwraca ukończone zadanie, nie blokując wątku
+            return Task.CompletedTask;
         }
 
-        // Metoda ScheduleNextRun planuje następne uruchomienie zadania.
+        // The ScheduleNextRun method schedules the next task execution.
         private void ScheduleNextRun()
         {
             var now = DateTime.Now;
-            var nextRun = now.Date.AddHours(8); // Następne uruchomienie dzisiaj o 8:00 rano
+            var nextRun = now.Date.AddHours(8); // Next execution scheduled for today at 8:00 AM
             if (now > nextRun)
             {
-                nextRun = nextRun.AddDays(1); // Jeśli jest po 8:00, planuje na następny dzień
+                nextRun = nextRun.AddDays(1); // If it's past 8:00, schedule for the next day
             }
 
-            var dueTime = nextRun - now; // Oblicza czas do następnego uruchomienia
-            // Ustawia timer na jednorazowe uruchomienie z obliczonym opóźnieniem
+            var dueTime = nextRun - now; // Calculates time until the next execution
+            // Sets the timer for a one-time execution with the calculated delay
             _timer = new Timer(DoWork, null, dueTime, Timeout.InfiniteTimeSpan);
         }
 
-        // Metoda DoWork zawiera logikę, która ma być wykonana przez timer.
+        // The DoWork method contains the logic to be executed by the timer.
         private void DoWork(object state)
         {
-            Console.WriteLine("Performing work: " + DateTime.Now); // Logika zadania, np. logowanie
+            Console.WriteLine("Performing work: " + DateTime.Now);
 
-            ScheduleNextRun(); // Replanuje następne uruchomienie po wykonaniu zadania
+            ScheduleNextRun();
         }
 
-        // Metoda StopAsync jest wywoływana przy zamykaniu usługi, służy do zatrzymania timera i czyszczenia.
+        // The StopAsync method is called upon the service's shutdown, used to stop the timer and cleanup.
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _timer?.Change(Timeout.Infinite, 0); // Zatrzymuje timer
-            return Task.CompletedTask; // Zwraca ukończone zadanie, nie wymaga czekania
+            _timer?.Change(Timeout.Infinite, 0);
+            return Task.CompletedTask;
         }
     }
 }

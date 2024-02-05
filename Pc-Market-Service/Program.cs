@@ -18,35 +18,23 @@ namespace Pc_Market_Service
                 })
                 .ConfigureServices((hostingContext, services) =>
                 {
-                    // Konfiguracja opcji
+                    // Configuration options setup
                     var databaseConfig = hostingContext.Configuration.GetSection("DatabaseConfig").Get<SqlConfiguration>();
 
-                    // Skonstruuj ciąg połączenia
+                    // Construct the connection string
                     databaseConfig.ConnectionString = $"Server={databaseConfig.SqlDatabaseServer};" +
                                                       $"DataBase={databaseConfig.SqlDatabaseName};" +
                                                       "Trusted_Connection=True;MultipleActiveResultSets=true";
 
-                    // Zarejestruj zaktualizowaną konfigurację
+                    // Register the updated configuration
                     services.Configure<SqlConfiguration>(options => hostingContext.Configuration.GetSection("DatabaseConfig").Bind(options));
-
-                    services.AddSingleton(databaseConfig); // Dodanie zaktualizowanego obiektu SqlConfiguration
+                    // Add the updated SqlConfiguration object
+                    services.AddSingleton(databaseConfig);
 
                     services.AddSingleton<IConfiguration>(hostingContext.Configuration);
 
-                    // Rejestrowanie usług
-                    //services.AddSingleton<IPurchaseInvoiceService, PurchaseInvoiceService>();
-                    // Kontynuuj rejestrowanie innych usług zgodnie z twoimi potrzebami...
-
-                    // Rejestrowanie repozytoriów
-                    //services.AddSingleton<IOptimaApiRepository, OptimaApiRepository>();
-                    // Kontynuuj rejestrowanie innych repozytoriów...
-
-                    // Rejestrowanie workerów jako usług hostowanych
-                    //services.AddHostedService<PzWorker>();
-                    // Kontynuuj rejestrowanie innych workerów...
-
                     services.AddSingleton<Logger.Logger>();
-                    // Konfiguracja logowania
+
                     services.AddLogging(loggingBuilder =>
                     {
                         loggingBuilder.AddConsole(configure =>
