@@ -21,6 +21,8 @@ namespace Pc_Market_Service
                     // Configuration options setup
                     var databaseConfig = hostingContext.Configuration.GetSection("DatabaseConfig").Get<SqlConfiguration>();
 
+                    services.Configure<ActiveWorkerConfig>(hostingContext.Configuration.GetSection("ActiveWorkerConfig"));
+                    
                     // Construct the connection string
                     databaseConfig.ConnectionString = $"Server={databaseConfig.SqlDatabaseServer};" +
                                                       $"DataBase={databaseConfig.SqlDatabaseName};" +
@@ -28,6 +30,7 @@ namespace Pc_Market_Service
 
                     // Register the updated configuration
                     services.Configure<SqlConfiguration>(options => hostingContext.Configuration.GetSection("DatabaseConfig").Bind(options));
+                    
                     // Add the updated SqlConfiguration object
                     services.AddSingleton(databaseConfig);
 

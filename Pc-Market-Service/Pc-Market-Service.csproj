@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="MobileApi\" />
     <Folder Include="Repository\IRepository\" />
     <Folder Include="Service\IService\" />
     <Folder Include="Worker\" />
