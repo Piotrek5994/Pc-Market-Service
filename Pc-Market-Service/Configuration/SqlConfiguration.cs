@@ -8,8 +8,39 @@ namespace Pc_Market_Service.Configuration
 {
     public class SqlConfiguration
     {
-        public string SqlDatabaseServer { get; set; } = string.Empty;
-        public string SqlDatabaseName { get; set; } = string.Empty;
-        public string ConnectionString { get; set; } = string.Empty;
+        private string _sqlDatabaseServer;
+        private string _sqlDatabaseName;
+        private string _connectionString = string.Empty;
+
+        public string SqlDatabaseServer
+        {
+            get { return _sqlDatabaseServer; }
+            set
+            {
+                _sqlDatabaseServer = value;
+                UpdateConnectionString();
+            }
+        }
+
+        public string SqlDatabaseName
+        {
+            get { return _sqlDatabaseName; }
+            set
+            {
+                _sqlDatabaseName = value;
+                UpdateConnectionString();
+            }
+        }
+
+        public string ConnectionString
+        {
+            get { return _connectionString; }
+            set { _connectionString = value; }
+        }
+
+        private void UpdateConnectionString()
+        {
+            _connectionString = $"Server={_sqlDatabaseServer};Database={_sqlDatabaseName};Trusted_Connection=True;TrustServerCertificate=True";
+        }
     }
 }
