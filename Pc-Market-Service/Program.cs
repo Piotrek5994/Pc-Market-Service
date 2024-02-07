@@ -9,6 +9,7 @@ using Pc_Market_Service.Repository;
 using Pc_Market_Service.Service.IService;
 using Pc_Market_Service.Service;
 using Pc_Market_Service.Worker;
+using Pc_Market_Service.Helper;
 
 namespace Pc_Market_Service
 {
@@ -37,6 +38,8 @@ namespace Pc_Market_Service
                     services.AddSingleton<IPcMarketRepository, PcMarketRepository>();
 
                     services.AddSingleton<IPcMarketService, PcMarketService>();
+
+                    services.AddSingleton<WorkerHelper>();
 
                     services.AddHostedService<PcMarketWorker>();
 

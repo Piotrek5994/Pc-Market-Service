@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Pc_Market_Service.Configuration;
 using Pc_Market_Service.Helper;
 using Pc_Market_Service.Repository.IRepository;
 using Pc_Market_Service.Service.IService;
@@ -12,26 +14,39 @@ namespace Pc_Market_Service.Worker
 {
     public class PcMarketWorker : BackgroundService
     {
-        private readonly IPcMarketService _service;
-        private readonly IPcMarketRepository _repository;
-        //private readonly WorkerHelper _workerHelper;
+        private readonly IOptions<ActiveWorkerConfig> _config;
+        private readonly Logger.Logger _log;
+        private readonly WorkerHelper _workerHelper;
 
-        public PcMarketWorker(IPcMarketService service,IPcMarketRepository repository)//,WorkerHelper worker )
+        public PcMarketWorker(IOptions<ActiveWorkerConfig> config,WorkerHelper workerHelper, Logger.Logger log)
         {
-            _service = service;
-            _repository = repository;
-            //_workerHelper = worker;
+            _config = config;
+            _workerHelper = workerHelper;
+            _log = log;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                _repository.GetDocumentList();
-                Console.WriteLine("test");
+                if (!_config.Value.Worker)
+                {
+                    _log.LogInformation($"Service not active - turned off.");
+                    return;
+                }
+
+                _log.LogInformation($"Service is active started at : {DateTime.Now}");
+                await _workerHelper.StartAsync(stoppingToken);
+                await Task.Delay(Timeout.Infinite, stoppingToken);
+
             }
-            return null;
+        }
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await _workerHelper.StopAsync(cancellationToken);
+            await base.StopAsync(cancellationToken);
+            _log.LogInformation("Worker stopped.");
         }
     }
 }
