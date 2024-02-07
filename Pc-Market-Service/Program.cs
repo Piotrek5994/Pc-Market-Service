@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pc_Market_Service.Configuration;
+using Pc_Market_Service.Repository.IRepository;
+using Pc_Market_Service.Repository;
 
 namespace Pc_Market_Service
 {
@@ -26,14 +28,13 @@ namespace Pc_Market_Service
                     
                     // Construct the connection string
                     databaseConfig.ConnectionString = $"Server={databaseConfig.SqlDatabaseServer};" +
-                                                      $"DataBase={databaseConfig.SqlDatabaseName};" +
-                                                      "Trusted_Connection=True;MultipleActiveResultSets=true";
+                                                      $"Database={databaseConfig.SqlDatabaseName};" +
+                                                      "Trusted_Connection=True";
 
                     // Register the updated configuration
                     services.Configure<SqlConfiguration>(options => hostingContext.Configuration.GetSection("DatabaseConfig").Bind(options));
-                    
-                    // Add the updated SqlConfiguration object
-                    services.AddSingleton(databaseConfig);
+
+                    services.AddScoped<IPcMarketRepository, PcMarketRepository>();
 
                     services.AddSingleton<IConfiguration>(hostingContext.Configuration);
 
