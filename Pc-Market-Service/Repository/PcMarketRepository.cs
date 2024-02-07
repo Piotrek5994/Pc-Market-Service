@@ -30,7 +30,7 @@ namespace Pc_Market_Service.Repository
                 using (SqlConnection conn = new SqlConnection(_sqlConfiguration.ConnectionString))
                 {
                     conn.Open();
-                    string sql = "SELECT * FROM Documents";
+                    string sql = "select * from dbo.Dok";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
@@ -41,9 +41,9 @@ namespace Pc_Market_Service.Repository
                     _log.LogInformation("Successfully got document data");
                 }
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                _log.LogError("Failed to connect to the database");
+                _log.LogError($"Failed to connect to the database : {ex.Message}");
             }
 
             return dt;

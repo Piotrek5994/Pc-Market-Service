@@ -6,6 +6,9 @@ using Microsoft.Extensions.Options;
 using Pc_Market_Service.Configuration;
 using Pc_Market_Service.Repository.IRepository;
 using Pc_Market_Service.Repository;
+using Pc_Market_Service.Service.IService;
+using Pc_Market_Service.Service;
+using Pc_Market_Service.Worker;
 
 namespace Pc_Market_Service
 {
@@ -35,6 +38,10 @@ namespace Pc_Market_Service
                     services.Configure<SqlConfiguration>(options => hostingContext.Configuration.GetSection("DatabaseConfig").Bind(options));
 
                     services.AddScoped<IPcMarketRepository, PcMarketRepository>();
+
+                    services.AddScoped<IPcMarketService, PcMarketService>();
+
+                    services.AddHostedService<PcMarketWorker>();
 
                     services.AddSingleton<IConfiguration>(hostingContext.Configuration);
 

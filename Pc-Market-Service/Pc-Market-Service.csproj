@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <Folder Include="MobileApi\" />
-    <Folder Include="Service\IService\" />
-    <Folder Include="Worker\" />
   </ItemGroup>
 
   <ItemGroup>
