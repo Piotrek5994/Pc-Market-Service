@@ -17,9 +17,8 @@ namespace Pc_Market_Service.Service
         }
         public async Task Proccess()
         {
-            MapQueryCustomerResult(13);
-            //List<DocumentDto> documentList = MapQueryDocumentResult();
-            //await CheckInformationInPcMarketDocument(documentList);
+            List<DocumentDto> documentList = MapQueryDocumentResult();
+            await CheckInformationInPcMarketDocument(documentList);
         }
         public List<DocumentDto> MapQueryDocumentResult()
         {
