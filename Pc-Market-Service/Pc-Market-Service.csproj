@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="MobileApi\" />
+    <Folder Include="Email\" />
   </ItemGroup>
 
   <ItemGroup>
