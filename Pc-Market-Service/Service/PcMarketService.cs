@@ -15,7 +15,13 @@ namespace Pc_Market_Service.Service
             _repository = repository;
             _log = log;
         }
-        public List<DocumentDto> MapQueryResult()
+        public async Task Proccess()
+        {
+            MapQueryCustomerResult(13);
+            //List<DocumentDto> documentList = MapQueryDocumentResult();
+            //await CheckInformationInPcMarketDocument(documentList);
+        }
+        public List<DocumentDto> MapQueryDocumentResult()
         {
 
             List<DocumentDto> resultDocument = new List<DocumentDto>();
@@ -40,11 +46,51 @@ namespace Pc_Market_Service.Service
                     }
                     catch (Exception ex)
                     {
-                        _log.LogError($"Błąd przy zaczytywaniu danych z bazy danych {ex.Message}");
+                        _log.LogError($"Błąd przy zaczytywaniu danych z bazy danych o dokumentach {ex.Message}");
                     }
                 }
             }
             return resultDocument;
+        }
+        public async Task CheckInformationInPcMarketDocument(List<DocumentDto> resultDocument)
+        {
+            foreach(DocumentDto resultDocumentObject in resultDocument)
+            {
+                DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
+                DateTime today = DateTime.Today;
+                DateTime dataPlatnosic = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
+
+                int differenceInDays = (today - dataWystawienia).Days;
+                if(differenceInDays > 7)
+                {
+                }
+            }
+        }
+        public List<CustomerDto> MapQueryCustomerResult(int customerId)
+        {
+            List<CustomerDto> resultCustomer = new List<CustomerDto>();
+            DataTable dtFromPcMarket = _repository.GetCustomer(customerId);
+            if (dtFromPcMarket != null && dtFromPcMarket.Rows.Count > 0)
+            {
+                foreach(DataRow drFromPcMarket in dtFromPcMarket.Rows)
+                {
+                    try
+                    {
+                        CustomerDto resultCustomerObject = new CustomerDto
+                        {
+                            NazwaKontrahenta = Convert.ToString(drFromPcMarket["Nazwa"]),
+                            EmailKontrahenta = Convert.ToString(drFromPcMarket["EMail"]),
+                            NumerTelKontrahenta = Convert.ToString(drFromPcMarket["Telefon"])
+                        };
+                        resultCustomer.Add(resultCustomerObject);
+                    }
+                    catch(Exception ex)
+                    {
+                        _log.LogError($"Błąd przy zaczytywaniu danych z bazy danych o kontrahentach {ex.Message}");
+                    }
+                }
+            }
+            return resultCustomer;
         }
     }
 }

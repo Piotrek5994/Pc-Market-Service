@@ -45,26 +45,28 @@ namespace Pc_Market_Service.Repository
 
             return dt;
         }
-        public DataTable GetCustomerList()
+        public DataTable GetCustomer(int customerId)
         {
             DataTable dt = new DataTable();
+            string sql = "SELECT * FROM dbo.Kontrahent WHERE KontrId = @CustomerId";
 
             try
             {
-                using(SqlConnection conn = new SqlConnection(_sqlConfiguration.ConnectionString))
+                using (SqlConnection conn = new SqlConnection(_sqlConfiguration.ConnectionString))
+                using (SqlDataAdapter da = new SqlDataAdapter(sql, conn))
                 {
                     conn.Open();
-                    string sql = "select * from dbo.Kontrahent";
-                    using(SqlDataAdapter da = new SqlDataAdapter(sql,conn))
-                    {
-                        da.Fill(dt);
-                    }
-                    _log.LogInformation("Successfully get customer data");
+
+                    da.SelectCommand.Parameters.AddWithValue("@CustomerId", customerId);
+
+                    da.Fill(dt);
+
+                    _log.LogInformation($"Successfully retrieved customer data for CustomerId: {customerId}");
                 }
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
-                _log.LogError($"Failed to connect to the database : {ex.Message}");
+                _log.LogError($"Failed to retrieve customer data for CustomerId: {customerId} - Error: {ex.Message}");
             }
 
             return dt;

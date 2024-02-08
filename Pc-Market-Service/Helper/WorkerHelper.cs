@@ -63,7 +63,7 @@ namespace Pc_Market_Service.Helper
         private void DoWork(object state)
         {
             Console.WriteLine("Performing work: " + DateTime.Now);
-            _service.MapQueryResult();
+            _service.Proccess();
             ScheduleNextRun();
         }
 
