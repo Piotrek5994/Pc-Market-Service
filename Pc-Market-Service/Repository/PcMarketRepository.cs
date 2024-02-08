@@ -2,12 +2,7 @@
 using Microsoft.Extensions.Options;
 using Pc_Market_Service.Configuration;
 using Pc_Market_Service.Repository.IRepository;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pc_Market_Service.Repository
 {
@@ -22,7 +17,7 @@ namespace Pc_Market_Service.Repository
             _log = log;
         }
         public DataTable GetDocumentList()
-       {
+        {
             DataTable dt = new DataTable();
 
             try
@@ -30,7 +25,9 @@ namespace Pc_Market_Service.Repository
                 using (SqlConnection conn = new SqlConnection(_sqlConfiguration.ConnectionString))
                 {
                     conn.Open();
-                    string sql = "select * from dbo.Dok";
+                    string sql = @"select
+                                   * from dbo.Dok j 
+                                   left join dbo.DokKontr i ON j.DokId = i.DokId";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
@@ -42,6 +39,30 @@ namespace Pc_Market_Service.Repository
                 }
             }
             catch (SqlException ex)
+            {
+                _log.LogError($"Failed to connect to the database : {ex.Message}");
+            }
+
+            return dt;
+        }
+        public DataTable GetCustomerList()
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                using(SqlConnection conn = new SqlConnection(_sqlConfiguration.ConnectionString))
+                {
+                    conn.Open();
+                    string sql = "select * from dbo.Kontrahent";
+                    using(SqlDataAdapter da = new SqlDataAdapter(sql,conn))
+                    {
+                        da.Fill(dt);
+                    }
+                    _log.LogInformation("Successfully get customer data");
+                }
+            }
+            catch(SqlException ex)
             {
                 _log.LogError($"Failed to connect to the database : {ex.Message}");
             }

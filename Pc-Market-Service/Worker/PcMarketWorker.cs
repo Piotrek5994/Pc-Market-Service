@@ -24,7 +24,6 @@ namespace Pc_Market_Service.Worker
             _workerHelper = workerHelper;
             _log = log;
         }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
@@ -46,7 +45,7 @@ namespace Pc_Market_Service.Worker
         {
             await _workerHelper.StopAsync(cancellationToken);
             await base.StopAsync(cancellationToken);
-            _log.LogInformation("Worker stopped.");
+            _log.LogInformation($"Worker stopped at : {DateTime.Now}");
         }
     }
 }

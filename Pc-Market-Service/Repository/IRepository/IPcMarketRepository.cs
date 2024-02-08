@@ -10,5 +10,6 @@ namespace Pc_Market_Service.Repository.IRepository
     public interface IPcMarketRepository
     {
         DataTable GetDocumentList();
+        DataTable GetCustomerList();
     }
 }
