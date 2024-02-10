@@ -22,7 +22,6 @@ namespace Pc_Market_Service.Service
         }
         public List<DocumentDto> MapQueryDocumentResult()
         {
-
             List<DocumentDto> resultDocument = new List<DocumentDto>();
             DataTable dtFromPcMarket = _repository.GetDocumentList();
             if (dtFromPcMarket != null && dtFromPcMarket.Rows.Count > 0)
@@ -57,11 +56,21 @@ namespace Pc_Market_Service.Service
             {
                 DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
                 DateTime today = DateTime.Today;
-                DateTime dataPlatnosic = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
+                DateTime dataPlatnosci = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
+                //DateTime dataWystawienia = DateTime.Parse("2024-02-13"); // Przykładowa data wystawienia
+                //DateTime dataPlatnosci = DateTime.Parse("2024-02-10"); // Przykładowa data płatności
 
-                int differenceInDays = (today - dataWystawienia).Days;
-                if(differenceInDays > 7)
+                int daysUntilDue = (dataPlatnosci - today).Days; // Days until payment is due
+
+                if (daysUntilDue == 3)
                 {
+                    var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
+                    Console.WriteLine("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest wymagana za 3 dni.");
+                }
+                else if (daysUntilDue == -3)
+                {
+                    var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
+                    Console.WriteLine("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest opóźniona o 3 dni.");
                 }
             }
         }

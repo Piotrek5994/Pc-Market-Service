@@ -27,7 +27,8 @@ namespace Pc_Market_Service.Repository
                     conn.Open();
                     string sql = @"select
                                    * from dbo.Dok j 
-                                   left join dbo.DokKontr i ON j.DokId = i.DokId";
+                                   left join dbo.DokKontr i ON j.DokId = i.DokId
+                                   where TypDok = 31";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
