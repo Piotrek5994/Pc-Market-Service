@@ -1,4 +1,5 @@
-﻿using Pc_Market_Service.Model.PcMarket;
+﻿using Pc_Market_Service.Email;
+using Pc_Market_Service.Model.PcMarket;
 using Pc_Market_Service.Repository.IRepository;
 using Pc_Market_Service.Service.IService;
 using System.Data;
@@ -8,12 +9,14 @@ namespace Pc_Market_Service.Service
     public class PcMarketService : IPcMarketService
     {
         private readonly IPcMarketRepository _repository;
+        private readonly SendingEmails _emails;
         private readonly Logger.Logger _log;
 
-        public PcMarketService(IPcMarketRepository repository, Logger.Logger log)
+        public PcMarketService(IPcMarketRepository repository, Logger.Logger log,SendingEmails emails)
         {
             _repository = repository;
             _log = log;
+            _emails = emails;
         }
         public async Task Proccess()
         {
@@ -54,23 +57,30 @@ namespace Pc_Market_Service.Service
         {
             foreach(DocumentDto resultDocumentObject in resultDocument)
             {
-                DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
+                //DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
                 DateTime today = DateTime.Today;
-                DateTime dataPlatnosci = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
-                //DateTime dataWystawienia = DateTime.Parse("2024-02-13"); // Przykładowa data wystawienia
-                //DateTime dataPlatnosci = DateTime.Parse("2024-02-10"); // Przykładowa data płatności
+                //DateTime dataPlatnosci = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
+                DateTime dataWystawienia = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
+                DateTime dataPlatnosci = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
 
-                int daysUntilDue = (dataPlatnosci - today).Days; // Days until payment is due
+                int daysUntilDue = (dataPlatnosci - dataWystawienia).Days; // Days until payment is due
 
                 if (daysUntilDue == 3)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
-                    Console.WriteLine("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest wymagana za 3 dni.");
+                    foreach(CustomerDto customer in result)
+                    {
+                        string content;
+                        content = $"Do upłynięcia terminu płatności za fakture : {resultDocumentObject.NazwaDokumentu}, zostało 3 dni w kwocie : {resultDocumentObject.DoZaplaty}";
+                        var send = _emails.SendEmail(content,customer.EmailKontrahenta);
+                        _log.LogInformation($"{send}");
+                    }
+                    Console.Write("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest wymagana za 3 dni.");
                 }
                 else if (daysUntilDue == -3)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
-                    Console.WriteLine("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest opóźniona o 3 dni.");
+                    Console.Write("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest opóźniona o 3 dni.");
                 }
             }
         }
