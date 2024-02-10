@@ -72,7 +72,7 @@ namespace Pc_Market_Service.Service
                     foreach(CustomerDto customer in result)
                     {
                         content = $"Do upłynięcia terminu płatności za fakture : {resultDocumentObject.NazwaDokumentu}, zostało 3 dni w kwocie : {resultDocumentObject.DoZaplaty}";
-                        _emails.SendEmail(content,customer.EmailKontrahenta);
+                        //_emails.SendEmail(content,customer.EmailKontrahenta);
                     }
                 }
                 else if (daysUntilDue == -3)
@@ -81,7 +81,7 @@ namespace Pc_Market_Service.Service
                     foreach (CustomerDto customer in result)
                     {
                         content = $"Termin płatności za fakture : {resultDocumentObject.NazwaDokumentu}, upłyneła 3 dni temu w kwocie : {resultDocumentObject.DoZaplaty}";
-                        _emails.SendEmail(content, customer.EmailKontrahenta);
+                        //_emails.SendEmail(content, customer.EmailKontrahenta);
                     }
                 }
             }

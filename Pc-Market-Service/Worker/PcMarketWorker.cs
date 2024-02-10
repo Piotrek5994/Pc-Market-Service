@@ -14,11 +14,11 @@ namespace Pc_Market_Service.Worker
 {
     public class PcMarketWorker : BackgroundService
     {
-        private readonly IOptions<ActiveWorkerConfig> _config;
+        private readonly IOptionsMonitor<ActiveWorkerConfig> _config;
         private readonly Logger.Logger _log;
         private readonly WorkerHelper _workerHelper;
 
-        public PcMarketWorker(IOptions<ActiveWorkerConfig> config,WorkerHelper workerHelper, Logger.Logger log)
+        public PcMarketWorker(IOptionsMonitor<ActiveWorkerConfig> config,WorkerHelper workerHelper, Logger.Logger log)
         {
             _config = config;
             _workerHelper = workerHelper;
@@ -29,10 +29,11 @@ namespace Pc_Market_Service.Worker
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (!_config.Value.Worker)
+                if (!_config.CurrentValue.Worker)
                 {
                     _log.LogInformation($"Service not active - turned off.");
-                    return;
+                    await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
+                    continue;
                 }
 
                 _log.LogInformation($"Service is active started at : {DateTime.Now}");
