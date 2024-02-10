@@ -18,7 +18,7 @@ namespace Pc_Market_Service.Email
         {
             _log = log;
         }
-        public string SendEmail(string contents, string recipientAddress)
+        public void SendEmail(string contents, string recipientAddress)
         {
             string recipentSender = "piotrek5994@gmail.com";
             string passwordSender = "neyy xmvp qmls sakk";
@@ -26,7 +26,6 @@ namespace Pc_Market_Service.Email
             if(string.IsNullOrEmpty(recipientAddress))
             {
                 _log.LogError($"Brak emaila w bazie danych");
-                return "Brak emaila w bazie danych";
             }
             try
             {
@@ -49,12 +48,10 @@ namespace Pc_Market_Service.Email
                 smtp.Send(message);
 
                 _log.LogInformation($"Email został wysłany do : {recipientAddress}");
-                return "OK";
             }
             catch (Exception ex)
             {
                 _log.LogError($"Błąd : {ex.Message}");
-                return ex.ToString();
             }
         }
     }

@@ -72,15 +72,18 @@ namespace Pc_Market_Service.Service
                     {
                         string content;
                         content = $"Do upłynięcia terminu płatności za fakture : {resultDocumentObject.NazwaDokumentu}, zostało 3 dni w kwocie : {resultDocumentObject.DoZaplaty}";
-                        var send = _emails.SendEmail(content,customer.EmailKontrahenta);
-                        _log.LogInformation($"{send}");
+                        _emails.SendEmail(content,customer.EmailKontrahenta);
                     }
-                    Console.Write("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest wymagana za 3 dni.");
                 }
                 else if (daysUntilDue == -3)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
-                    Console.Write("Płatność za dokument o ID " + resultDocumentObject.DokumentId + " jest opóźniona o 3 dni.");
+                    foreach (CustomerDto customer in result)
+                    {
+                        string content;
+                        content = $"Termin płatności za fakture : {resultDocumentObject.NazwaDokumentu}, upłyneła 3 dni temu w kwocie : {resultDocumentObject.DoZaplaty}";
+                        _emails.SendEmail(content, customer.EmailKontrahenta);
+                    }
                 }
             }
         }
