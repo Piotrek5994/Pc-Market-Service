@@ -10,6 +10,7 @@ using Pc_Market_Service.Service.IService;
 using Pc_Market_Service.Service;
 using Pc_Market_Service.Worker;
 using Pc_Market_Service.Helper;
+using Pc_Market_Service.Email;
 
 namespace Pc_Market_Service
 {
@@ -40,6 +41,8 @@ namespace Pc_Market_Service
                     services.AddSingleton<IPcMarketService, PcMarketService>();
 
                     services.AddSingleton<WorkerHelper>();
+
+                    services.AddSingleton<SendingEmails>();
 
                     services.AddHostedService<PcMarketWorker>();
 
