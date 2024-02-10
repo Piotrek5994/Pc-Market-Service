@@ -55,6 +55,7 @@ namespace Pc_Market_Service.Service
         }
         public async Task CheckInformationInPcMarketDocument(List<DocumentDto> resultDocument)
         {
+            string content;
             foreach(DocumentDto resultDocumentObject in resultDocument)
             {
                 //DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
@@ -70,7 +71,6 @@ namespace Pc_Market_Service.Service
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
                     foreach(CustomerDto customer in result)
                     {
-                        string content;
                         content = $"Do upłynięcia terminu płatności za fakture : {resultDocumentObject.NazwaDokumentu}, zostało 3 dni w kwocie : {resultDocumentObject.DoZaplaty}";
                         _emails.SendEmail(content,customer.EmailKontrahenta);
                     }
@@ -80,7 +80,6 @@ namespace Pc_Market_Service.Service
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
                     foreach (CustomerDto customer in result)
                     {
-                        string content;
                         content = $"Termin płatności za fakture : {resultDocumentObject.NazwaDokumentu}, upłyneła 3 dni temu w kwocie : {resultDocumentObject.DoZaplaty}";
                         _emails.SendEmail(content, customer.EmailKontrahenta);
                     }
