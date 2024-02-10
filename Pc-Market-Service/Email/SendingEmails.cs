@@ -11,36 +11,44 @@ namespace Pc_Market_Service.Email
 {
     public class SendingEmails
     {
-        public string SendEmail(string topic, string contents, string recipientAddress)
+        private readonly Logger.Logger _log;
+
+        public SendingEmails(Logger.Logger log)
         {
-            string adresNadawcy = "piotrek5994@gmail.com";
-            string hasloNadawcy = "neyy xmvp qmls sakk";
-            string smtpNadawcy = "smtp.gmail.com";
+            _log = log;
+        }
+
+        public void SendEmail(string topic, string contents, string recipientAddress)
+        {
+            string recipentSender = "piotrek5994@gmail.com";
+            string passwordSender = "neyy xmvp qmls sakk";
+            string smtpSender = "smtp.gmail.com";
 
             try
             {
                 MailMessage message = new MailMessage();
 
-                message.From = new MailAddress(adresNadawcy);
+                message.From = new MailAddress(recipentSender);
 
                 message.To.Add(new MailAddress(recipientAddress));
 
                 message.Subject = topic;
+
                 message.Body = contents;
 
-                SmtpClient smtp = new SmtpClient(smtpNadawcy);
+                SmtpClient smtp = new SmtpClient(smtpSender);
                 smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new NetworkCredential(adresNadawcy, hasloNadawcy);
-                smtp.EnableSsl = true; // Ustaw na true, jeśli wymagane jest SSL
-                smtp.Port = 587; // Ustaw port SMTP
+                smtp.Credentials = new NetworkCredential(recipentSender, passwordSender);
+                smtp.EnableSsl = true;
+                smtp.Port = 587;
 
                 smtp.Send(message);
 
-                return "OK";
+                _log.LogInformation($"Email został wysłany do : {recipientAddress}");
             }
             catch (Exception ex)
             {
-                return "Błąd: " + ex.Message;
+                _log.LogError($"Błąd : {ex.Message}");
             }
         }
     }
