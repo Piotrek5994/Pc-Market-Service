@@ -33,6 +33,9 @@ namespace Pc_Market_Service
                     // Add configuration for worker
                     services.Configure<ActiveWorkerConfig>(hostingContext.Configuration.GetSection("ActiveWorkerConfig"));
 
+                    // Add configuration for SenderEmail
+                    services.Configure<EmailConfig>(hostingContext.Configuration.GetSection("EmailConfig"));
+
                     // Register the updated configuration
                     services.Configure<SqlConfiguration>(options => hostingContext.Configuration.GetSection("DatabaseConfig").Bind(options));
 

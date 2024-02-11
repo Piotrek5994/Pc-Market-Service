@@ -3,6 +3,7 @@ using Pc_Market_Service.Model.PcMarket;
 using Pc_Market_Service.Repository.IRepository;
 using Pc_Market_Service.Service.IService;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Pc_Market_Service.Service
 {
@@ -59,15 +60,15 @@ namespace Pc_Market_Service.Service
             string content;
             foreach(DocumentDto resultDocumentObject in resultDocument)
             {
-                DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
+                //DateTime dataIssuance = resultDocumentObject.DataWystawieniaDokumentu.Value;
                 DateTime today = DateTime.Today;
-                DateTime dataPlatnosci = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
-                //DateTime dataWystawienia = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
-                //DateTime dataPlatnosci = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
+                //DateTime paymentDate = dataIssuance.AddDays(resultDocumentObject.TerminPlatnosci);
+                DateTime dataIssuance = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
+                DateTime paymentDate = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
 
-                int daysUntilDue = (dataPlatnosci - today).Days; // Days until payment is due
+                int daysUntilDue = (paymentDate - dataIssuance).Days; // Days until payment is due
 
-                if (daysUntilDue == 3 && resultDocumentObject.Uregulowano != 0)
+                if (daysUntilDue == 3 && resultDocumentObject.Uregulowano == 0.0000m)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
                     foreach(CustomerDto customer in result)
@@ -76,7 +77,7 @@ namespace Pc_Market_Service.Service
                         _emails.SendEmail(content,customer.EmailKontrahenta);
                     }
                 }
-                else if (daysUntilDue == -3 && resultDocumentObject.Uregulowano != 0)
+                else if (daysUntilDue == -3 && resultDocumentObject.Uregulowano == 0.0000m)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
                     foreach (CustomerDto customer in result)

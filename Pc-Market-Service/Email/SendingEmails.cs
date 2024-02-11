@@ -6,26 +6,32 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Pc_Market_Service.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Pc_Market_Service.Email
 {
     public class SendingEmails
     {
+        private readonly EmailConfig _config;
         private readonly Logger.Logger _log;
         private string topic = "Informacja o Płatnościach";
 
-        public SendingEmails(Logger.Logger log)
+        public SendingEmails(IOptions<EmailConfig> config,Logger.Logger log)
         {
+            _config = config.Value;
             _log = log;
         }
         public void SendEmail(string contents, string recipientAddress)
         {
-            string recipentSender = "piotrek5994@gmail.com";
-            string passwordSender = "neyy xmvp qmls sakk";
-            string smtpSender = "smtp.gmail.com";
-            if(string.IsNullOrEmpty(recipientAddress))
+            string recipentSender = _config.Email;
+            string passwordSender = _config.EmailPassword;
+            string smtpSender = _config.SmptSender;
+
+            if (string.IsNullOrEmpty(recipientAddress))
             {
                 _log.LogError($"Brak emaila w bazie danych");
+                return;
             }
             try
             {
