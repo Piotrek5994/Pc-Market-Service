@@ -60,13 +60,13 @@ namespace Pc_Market_Service.Service
             string content;
             foreach(DocumentDto resultDocumentObject in resultDocument)
             {
-                //DateTime dataIssuance = resultDocumentObject.DataWystawieniaDokumentu.Value;
+                DateTime dataIssuance = resultDocumentObject.DataWystawieniaDokumentu.Value;
                 DateTime today = DateTime.Today;
-                //DateTime paymentDate = dataIssuance.AddDays(resultDocumentObject.TerminPlatnosci);
-                DateTime dataIssuance = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
-                DateTime paymentDate = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
+                DateTime paymentDate = dataIssuance.AddDays(resultDocumentObject.TerminPlatnosci);
+                //DateTime dataIssuance = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
+                //DateTime paymentDate = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
 
-                int daysUntilDue = (paymentDate - dataIssuance).Days; // Days until payment is due
+                int daysUntilDue = (paymentDate - today).Days; // Days until payment is due
 
                 if (daysUntilDue == 3 && resultDocumentObject.Uregulowano == 0.0000m)
                 {
