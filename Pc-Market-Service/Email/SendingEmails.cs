@@ -39,7 +39,7 @@ namespace Pc_Market_Service.Email
 
                 message.From = new MailAddress(recipentSender);
 
-                message.To.Add(new MailAddress("piotrekd@elte-s.eu"));
+                message.To.Add(new MailAddress(recipientAddress));
 
                 message.Subject = topic;
 
