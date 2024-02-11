@@ -22,7 +22,7 @@ namespace Pc_Market_Service.Email
             _config = config.Value;
             _log = log;
         }
-        public void SendEmail(string contents, string recipientAddress)
+        public void SendEmail(string contents, string recipientAddress,string customerName)
         {
             string recipentSender = _config.Email;
             string passwordSender = _config.EmailPassword;
@@ -30,7 +30,7 @@ namespace Pc_Market_Service.Email
 
             if (string.IsNullOrEmpty(recipientAddress))
             {
-                _log.LogError($"Brak emaila w bazie danych");
+                _log.LogError($"Brak emaila w bazie danych dla kontrahenta : {customerName}");
                 return;
             }
             try
