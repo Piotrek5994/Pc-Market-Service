@@ -21,6 +21,7 @@ namespace Pc_Market_Service
         public static async Task Main(string[] args)
         {
             var builder = Host.CreateDefaultBuilder(args)
+                .UseWindowsService()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);

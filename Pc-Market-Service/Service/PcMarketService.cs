@@ -83,7 +83,7 @@ namespace Pc_Market_Service.Service
                     foreach (CustomerDto customer in result)
                     {
                         content = $"Termin płatności za fakture : {resultDocumentObject.NazwaDokumentu}, upłyneła 3 dni temu w kwocie : {resultDocumentObject.DoZaplaty}";
-                        _emails.SendEmail(content, customer.EmailKontrahenta);
+                        _emails.SendEmail(content, customer.EmailKontrahenta, customer.NazwaKontrahenta);
                     }
                 }
             }
