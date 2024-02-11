@@ -14,6 +14,7 @@ namespace Pc_Market_Service.Model.PcMarket
         public DateTime? DataPlatnosciDokumentu { get; set; }
         public int TerminPlatnosci { get; set; }
         public decimal DoZaplaty { get; set; }
+        public decimal Uregulowano { get; set; }
         public int KontrahentId { get; set; }   
     }
 }

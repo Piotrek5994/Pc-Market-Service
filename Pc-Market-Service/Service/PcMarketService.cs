@@ -41,6 +41,7 @@ namespace Pc_Market_Service.Service
                             DataWystawieniaDokumentu = drPzFromPcMarket["DataDod"] != DBNull.Value ? Convert.ToDateTime(drPzFromPcMarket["DataDod"]) : (DateTime?)null,
                             TerminPlatnosci = Convert.ToInt32(drPzFromPcMarket["TerminPlat"]),
                             DoZaplaty = Convert.ToDecimal(drPzFromPcMarket["Razem"]),
+                            Uregulowano = Convert.ToDecimal(drPzFromPcMarket["Zaplacono"]),
                             KontrahentId = (drPzFromPcMarket["KontrId"]) != DBNull.Value ? Convert.ToInt32(drPzFromPcMarket["KontrId"]) : 0
                         };
                         resultDocument.Add(resultDocumentObject);
@@ -58,30 +59,30 @@ namespace Pc_Market_Service.Service
             string content;
             foreach(DocumentDto resultDocumentObject in resultDocument)
             {
-                DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
+                //DateTime dataWystawienia = resultDocumentObject.DataWystawieniaDokumentu.Value;
                 DateTime today = DateTime.Today;
-                DateTime dataPlatnosci = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
-                //DateTime dataWystawienia = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
-                //DateTime dataPlatnosci = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
+                //DateTime dataPlatnosci = dataWystawienia.AddDays(resultDocumentObject.TerminPlatnosci);
+                DateTime dataWystawienia = DateTime.Parse("2024-02-10"); // Przykładowa data wystawienia
+                DateTime dataPlatnosci = DateTime.Parse("2024-02-13"); // Przykładowa data płatności
 
-                int daysUntilDue = (dataPlatnosci - today).Days; // Days until payment is due
+                int daysUntilDue = (dataPlatnosci - dataWystawienia).Days; // Days until payment is due
 
-                if (daysUntilDue == 3)
+                if (daysUntilDue == 3 && resultDocumentObject.Uregulowano != 0)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
                     foreach(CustomerDto customer in result)
                     {
                         content = $"Do upłynięcia terminu płatności za fakture : {resultDocumentObject.NazwaDokumentu}, zostało 3 dni w kwocie : {resultDocumentObject.DoZaplaty}";
-                        _emails.SendEmail(content,customer.EmailKontrahenta);
+                        //_emails.SendEmail(content,customer.EmailKontrahenta);
                     }
                 }
-                else if (daysUntilDue == -3)
+                else if (daysUntilDue == -3 && resultDocumentObject.Uregulowano != 0)
                 {
                     var result = MapQueryCustomerResult(resultDocumentObject.KontrahentId);
                     foreach (CustomerDto customer in result)
                     {
                         content = $"Termin płatności za fakture : {resultDocumentObject.NazwaDokumentu}, upłyneła 3 dni temu w kwocie : {resultDocumentObject.DoZaplaty}";
-                        _emails.SendEmail(content, customer.EmailKontrahenta);
+                        //_emails.SendEmail(content, customer.EmailKontrahenta);
                     }
                 }
             }
